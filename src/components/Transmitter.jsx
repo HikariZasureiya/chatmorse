@@ -77,7 +77,7 @@ export default function({setStrii , SetTextStr}){
                 else if(morsetotext.hasOwnProperty(temp))
                     return prev+morsetotext[temp]+" ";
                 else
-                    return prev;
+                    return prev+" ";
           
          });
          setTemp(''); 
