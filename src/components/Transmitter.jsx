@@ -6,7 +6,7 @@ import  texttomorse  from '../assets/texttomorse.json'
 
 export default function({setStrii , SetTextStr}){
   
-
+  const [ismobile , setIsMobile] = useState(false);
   const [clicked , SetClicked] = useState(0);
   const [unclicked , setUnclicked] = useState(0);
   const [string , SetString] = useState('');
@@ -19,6 +19,10 @@ export default function({setStrii , SetTextStr}){
   const unclickedRef = useRef(unclicked);
   const mtempref = useRef(mtemp);
 
+  useEffect(() => {
+    const checkIfMobile = /Mobi|Android|iPhone|iPad|iPod|Windows Phone|webOS|BlackBerry|IEMobile/i.test(navigator.userAgent);
+    setIsMobile(checkIfMobile);
+  }, []);
 
 // store the mousedown time in a reference using useEffect to avoid bugs ;( 
   useEffect(() => {
@@ -165,16 +169,35 @@ export default function({setStrii , SetTextStr}){
 
 
   return(<>
-  <button
-  style={{backgroundColor:'#EE4B2B' , width:'100px', height:'50px'}}
-  onMouseDown={(e)=>{
-    typein();
-    e.target.style.backgroundColor='#E97451'
-  }} 
-    onMouseUp={(e)=>{
-        typeout();
-        e.target.style.backgroundColor='#EE4B2B'
-    }}>GG</button>
+
+  <div>
+    {ismobile ? (
+
+      <button
+      style={{backgroundColor:'#EE4B2B' , width:'100px', height:'50px'}}
+      onTouchStart={(e)=>{
+        typein();
+        e.target.style.backgroundColor='#E97451'
+      }} 
+        onTouchEnd={(e)=>{
+            typeout();
+            e.target.style.backgroundColor='#EE4B2B'
+        }}>MOB</button>
+    ):
+  (
+      <button
+      style={{backgroundColor:'#EE4B2B' , width:'100px', height:'50px'}}
+      onMouseDown={(e)=>{
+        typein();
+        e.target.style.backgroundColor='#E97451'
+      }} 
+        onMouseUp={(e)=>{
+            typeout();
+            e.target.style.backgroundColor='#EE4B2B'
+        }}>PC</button>
+  )}
+  </div>
+ 
 
   </>)
 
