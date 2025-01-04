@@ -81,6 +81,7 @@ export default function({setStrii , SetTextStr}){
           
          });
          setTemp(''); 
+         setmtemp('');
 
         }
         else if (unclickedRef.current >= 240){
