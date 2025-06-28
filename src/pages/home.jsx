@@ -8,6 +8,8 @@ function Room() {
   const display = useRef();
   const [strii, setStrii] = useState("");
   const [textstr, SetTextStr] = useState("");
+
+  // Don't even dare touch this. it just works
   const [clicked, SetClicked] = useState(0);
   const clickedRef = useRef(clicked);
   const [unclicked, setUnclicked] = useState(0);
@@ -24,8 +26,8 @@ function Room() {
   const tempRef = useRef(temp);
   const [mtemp, setmtemp] = useState("");
   const mtempref = useRef(mtemp);
-  const [lock , setlock] = useState(true);
-  const lockRef = useRef(lock);  
+  const [lock, setlock] = useState(true);
+  const lockRef = useRef(lock);
 
   useEffect(() => {
     clickedRef.current = clicked;
@@ -52,6 +54,10 @@ function Room() {
   }, [temp]);
 
   useEffect(() => {
+    mtempref.current = mtemp;
+  }, [mtemp]);
+
+  useEffect(() => {
     setStrii(string);
     stringRef.current = string;
   }, [string]);
@@ -68,57 +74,56 @@ function Room() {
     });
   }, [mstring, temp]);
 
-
   useEffect(() => {
-    const handleKeyPress = (event) =>{
-        if(lockRef.current){
-            setlock(false);
-            if (upeventRef.current) {
-                clearInterval(upeventRef.current);
-                setUpevent(null);
-            }
-
-            if (unclickedRef.current >= 560) {
-                SetString(() => stringRef.current + "/");
-                SetmString(() => {
-                if (texttomorse.hasOwnProperty(tempRef.current)) 
-                    return mstringRef.current + tempRef.current + " ";
-                else if (morsetotext.hasOwnProperty(tempRef.current))
-                    return mstringRef.current + morsetotext[tempRef.current] + " ";
-                else return mstringRef.current + " ";
-                });
-                setTemp("");
-                setmtemp("");
-            }
-            
-            else if (unclickedRef.current >= 240) {
-                SetString(() => stringRef.current + " ");
-                SetmString(() => {
-                if (texttomorse.hasOwnProperty(tempRef.current)) return mstringRef.current + tempRef.current;
-                else if (morsetotext.hasOwnProperty(tempRef.current))
-                    return mstringRef.current + morsetotext[tempRef.current];
-                else return mstringRef.current;
-                });
-                setTemp("");
-                setmtemp("");
-            }
-            setUnclicked(0);
-
-            const down = setInterval(() => {
-                SetClicked((prev) => prev + 10);
-            }, 10);
-            setDownevent(down);
+    const handleKeyPress = (event) => {
+      if (lockRef.current) {
+        console.log("what1" , tempRef.current , mtempref.current);
+        setlock(false);
+        if (upeventRef.current) {
+          clearInterval(upeventRef.current);
+          setUpevent(null);
         }
+        if (unclickedRef.current >= 560) {
+          SetString(() => stringRef.current + "/");
+          SetmString(() => {
+            if (texttomorse.hasOwnProperty(tempRef.current)){
+                return mstringRef.current + tempRef.current + " ";
+            }
+            else if (morsetotext.hasOwnProperty(tempRef.current)){
+              return mstringRef.current + morsetotext[tempRef.current] + " ";}
+            else return mstringRef.current + " ";
+          });
+          setTemp("");
+          setmtemp("");
+        } else if (unclickedRef.current >= 240) {
+          SetString(() => stringRef.current + " ");
+          SetmString(() => {
+            if (texttomorse.hasOwnProperty(tempRef.current))
+              return mstringRef.current + tempRef.current;
+            else if (morsetotext.hasOwnProperty(tempRef.current))
+              return mstringRef.current + morsetotext[tempRef.current];
+            else return mstringRef.current;
+          });
+          setTemp("");
+          setmtemp("");
+        }
+        setUnclicked(0);
+        const down = setInterval(() => {
+          SetClicked((prev) => prev + 10);
+        }, 10);
+        setDownevent(down);
+      }
     };
-
     const handleKeyUp = (event) => {
       setlock(true);
       if (downeventRef.current) {
         clearInterval(downeventRef.current);
         if (clickedRef.current >= 240) {
-          SetString((prev) => stringRef.current + "-");
-          setTemp((prev) => {
-            if (morsetotext.hasOwnProperty(texttomorse[tempRef.current] + "-")) {
+          SetString(() => stringRef.current + "-");
+          setTemp(() => {
+            if (
+              morsetotext.hasOwnProperty(texttomorse[tempRef.current] + "-")
+            ) {
               return morsetotext[texttomorse[tempRef.current] + "-"];
             } else return mtempref.current + "-";
           });
@@ -126,7 +131,9 @@ function Room() {
         } else {
           SetString((prev) => stringRef.current + ".");
           setTemp((prev) => {
-            if (morsetotext.hasOwnProperty(texttomorse[tempRef.current] + ".")) {
+            if (
+              morsetotext.hasOwnProperty(texttomorse[tempRef.current] + ".")
+            ) {
               return morsetotext[texttomorse[tempRef.current] + "."];
             } else return mtempref.current + ".";
           });
@@ -152,11 +159,10 @@ function Room() {
       setUpevent(up);
     };
 
-    window.addEventListener("keypress", handleKeyPress);
+    window.addEventListener("keydown", handleKeyPress);
     window.addEventListener("keyup", handleKeyUp);
-
     return () => {
-      window.removeEventListener("keypress", handleKeyPress);
+      window.removeEventListener("keydown", handleKeyPress);
       window.removeEventListener("keyup", handleKeyUp);
     };
   }, []);
