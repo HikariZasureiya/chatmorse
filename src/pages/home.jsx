@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import Click from "../components/Transmitter";
-import "../App.css";
 import morsetotext from "../assets/morsetotext.json";
 import texttomorse from "../assets/texttomorse.json";
+import { TypingAnimation } from "../components/typing";
+import { motion } from "motion/react";
 
 function Room() {
   const display = useRef();
@@ -28,6 +29,9 @@ function Room() {
   const mtempref = useRef(mtemp);
   const [lock, setlock] = useState(true);
   const lockRef = useRef(lock);
+  const [moved, setMoved] = useState(false);
+  const [done, setDone] = useState("#ffffff");
+  const doneRef = useRef(done);
 
   useEffect(() => {
     clickedRef.current = clicked;
@@ -77,7 +81,6 @@ function Room() {
   useEffect(() => {
     const handleKeyPress = (event) => {
       if (lockRef.current) {
-        console.log("what1" , tempRef.current , mtempref.current);
         setlock(false);
         if (upeventRef.current) {
           clearInterval(upeventRef.current);
@@ -86,12 +89,11 @@ function Room() {
         if (unclickedRef.current >= 560) {
           SetString(() => stringRef.current + "/");
           SetmString(() => {
-            if (texttomorse.hasOwnProperty(tempRef.current)){
-                return mstringRef.current + tempRef.current + " ";
-            }
-            else if (morsetotext.hasOwnProperty(tempRef.current)){
-              return mstringRef.current + morsetotext[tempRef.current] + " ";}
-            else return mstringRef.current + " ";
+            if (texttomorse.hasOwnProperty(tempRef.current)) {
+              return mstringRef.current + tempRef.current + " ";
+            } else if (morsetotext.hasOwnProperty(tempRef.current)) {
+              return mstringRef.current + morsetotext[tempRef.current] + " ";
+            } else return mstringRef.current + " ";
           });
           setTemp("");
           setmtemp("");
@@ -161,6 +163,8 @@ function Room() {
 
     window.addEventListener("keydown", handleKeyPress);
     window.addEventListener("keyup", handleKeyUp);
+    // thankfully the thing ends here
+
     return () => {
       window.removeEventListener("keydown", handleKeyPress);
       window.removeEventListener("keyup", handleKeyUp);
@@ -168,12 +172,33 @@ function Room() {
   }, []);
 
   return (
-    <div className="flex">
-      <Click setStrii={setStrii} SetTextStr={SetTextStr} />
-      <div ref={display} style={{ marginBottom: "20px", marginTop: "10px" }}>
-        Morse: {strii}
+    <div className="flex relative flex-col w-screen h-screen items-center justify-center">
+      <div>
+        <div
+          className={`absolute top-0 left-0 w-screen h-screen z-50 flex items-center justify-center bg-black transition-all duration-1000 ease-in-out ${
+            moved
+              ? "-translate-y-full opacity-100"
+              : "translate-y-0 opacity-100"
+          }`}
+        >
+          <div className="text-10xl font-bold">
+            <TypingAnimation
+              setMoved={setMoved}
+              setDone={setDone}
+              doneRef={doneRef}
+              done={done}
+            >
+              .... . .-.. .-.. --- / .-- --- .-. .-.. -..
+            </TypingAnimation>
+          </div>
+        </div>
+
+        <Click setStrii={setStrii} SetTextStr={SetTextStr} />
+        <div ref={display} style={{ marginBottom: "20px", marginTop: "10px" }}>
+          Morse: {strii}
+        </div>
+        <div>Text: {textstr}</div>
       </div>
-      <div>Text: {textstr}</div>
     </div>
   );
 }
