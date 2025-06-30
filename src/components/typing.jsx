@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-
+import morsetotext from '../assets/morsetotext.json'
 export function TypingAnimation({
   setMoved,
   setDone,
@@ -20,6 +20,8 @@ export function TypingAnimation({
   const [initialColor, setinitialColor] = useState("#ffffff");
   const colorSet = useRef(false);
   const elementRef = useRef(null);
+  const intermediate=useRef('');
+  const intermediatemorse = useRef('');
   
 
   useEffect(() => {
@@ -45,15 +47,15 @@ export function TypingAnimation({
 
     return () => observer.disconnect();
   }, [startOnView, delay]);
-
+  
   useEffect(() => {
     if (!started) return;
 
     let i = 0;
     let time = 0;
     let singletime = 0;
-    // const audioCtxRef = new AudioContext();
-
+    let index = 0;
+    
     const interval = setInterval(() => {
       if (i >= children.length) {
         time += duration;
@@ -73,13 +75,31 @@ export function TypingAnimation({
 
       const char = children.charAt(i);
       let waitfor = 0;
+      
+      if (char === ".") {
+        waitfor = duration + 1;
+      }
+      else if (char === "-"){
+        waitfor = duration * 3;
+        }
 
-      if (char === ".") waitfor = duration + 1;
-      else if (char === "-") waitfor = duration * 3;
-      else if (char === " ") waitfor = duration * 4;
+      else if (char === " "){
+        waitfor = duration * 4;
+      }
 
+      
       if (singletime >= waitfor) {
-        setDisplayedText((prev) => prev + char);
+        intermediatemorse.current += char; 
+        
+        if(char === " "){
+          console.log(intermediate.current , intermediate);
+          intermediate.current += morsetotext[intermediatemorse.current.trim()];
+          intermediatemorse.current = ''; 
+        }
+
+        setDisplayedText((prev) => {
+          return intermediate.current + intermediatemorse.current
+        });
 
         if ((char === "." || char === "-") && audioCtxRef.current) {
           const osc = audioCtxRef.current.createOscillator();

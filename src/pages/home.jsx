@@ -231,7 +231,7 @@ function Room() {
                 audioCtxRef={audioCtxRef}
                 duration={60}
               >
-                - .- .-.. -.- / -- --- .-. ... .
+                { "-- --- .-. ... . / - .- .-.. -.- " }
               </TypingAnimation>
             </div>
           </div>
