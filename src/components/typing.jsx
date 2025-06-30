@@ -92,7 +92,6 @@ export function TypingAnimation({
         intermediatemorse.current += char; 
         
         if(char === " "){
-          console.log(intermediate.current , intermediate);
           intermediate.current += morsetotext[intermediatemorse.current.trim()];
           intermediatemorse.current = ''; 
         }
@@ -124,7 +123,7 @@ export function TypingAnimation({
   return (
     <MotionComponent
       ref={elementRef}
-      className={`lg:text-[23px] md:text-[15px] sm:text-lg text-[10px] font-bold leading-[5rem] tracking-[-0.02em] ${
+      className={` font-pressstarttwop lg:text-[23px] md:text-[15px] sm:text-lg text-[10px] font-bold leading-[5rem] tracking-[-0.02em] ${
         className || ""
       }`}
       initial={{ color: initialColor }}
