@@ -14,12 +14,21 @@ function Home() {
   const audioCtxRef = useRef(null);
   const [audioctr, setaudioctr] = useState(0);
   const [audioEnabled, setAudioEnabled] = useState(false);
+ const [totHeight, setTotHeight] = useState(document.documentElement.scrollHeight);
+const [totWidth, setTotWidth] = useState(document.documentElement.scrollWidth);
 
+useEffect(() => {
+  const handleResize = () => {
+    setTotHeight(document.documentElement.scrollHeight);
+    setTotWidth(document.documentElement.scrollWidth);
+  };
+  window.addEventListener('resize', handleResize);
+  handleResize();
 
-  useEffect(()=>{
-    movedRef.current = moved;
-  },[moved])
-  
+  return () => {
+    window.removeEventListener('resize', handleResize);
+  };
+  }, []); 
 
   const handleStartAudio = () => {
     if (!audioCtxRef.current) {
@@ -85,7 +94,7 @@ function Home() {
       </div>
       
     <div className="h-full w-full">
-      <CMatrix height={totalHeight} width={totalWidth} status={moved}/>
+      <CMatrix height={totHeight} width={totWidth} status={moved}/>
     </div>
 
     </div>

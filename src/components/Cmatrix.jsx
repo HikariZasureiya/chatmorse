@@ -5,14 +5,16 @@ const CmatCompo = ({ id  , handleDone , compocountRef , height , width, gotime }
   const [moved, setMoved] = useState(false);
   const [text, setText] = useState("");
   const [lock, setLock] = useState(true);
-
+  const [generatetime , setgeneratetime] = useState(100); 
   const randx = useMemo(() => {
+   
     return Math.floor(Math.random() * (width - 2 + 1)) + 2;
   }, []);
 
   useEffect(()=>{
-    console.log(height);
-  },[])
+    if(height > 750 && width < 640)
+        setgeneratetime(70);
+  },[width , height])
 
   useEffect(() => {
     const chargen = () => {
@@ -42,12 +44,13 @@ const CmatCompo = ({ id  , handleDone , compocountRef , height , width, gotime }
           return prev.slice(1) + String.fromCharCode(randascii);
         });
         timee += 100;
+        console.log(generatetime)
         if (timee > gotime.current*1000) {
           handleDone(id);
           compocountRef.current -= 1;
           clearInterval(interval);
         }
-      }, 100);
+      }, generatetime);
     }
   }, [text, lock]);
 
@@ -71,10 +74,10 @@ const CMatrix = ({height , width , status}) => {
 
   const [components, setComponents] = useState([]);
   const intervalStarted = useRef(false);
+  const totalcomp = useRef(0);
   const compocount = useRef(0);
-  const goheight = useRef(0);
   const gotime = useRef(0);
-  const [statusstate , setstatusstate] = useState(status);
+ 
 
 
    const addComponent = () => {
@@ -84,46 +87,44 @@ const CMatrix = ({height , width , status}) => {
   };
 
   // Start interval only once
-  let totalcomp = 0;
   useEffect(()=>{
-     console.log("status: ", status);
+    
     if(!(status)) return;
 
     if(width>1024){
-        totalcomp = 500;
+        totalcomp.current = 500;
         gotime.current = (3/730)*height;
     }
 
     else if(width > 768){
-        totalcomp = 200;
+        totalcomp.current = 200;
          gotime.current = (3/730)*height;
         }
 
     else if(width > 640){
-        totalcomp = 100;
+        totalcomp.current = 100;
          gotime.current = (2/771)*height;
     }
+
+    else if(width > 500){
+        totalcomp.current = 70;
+         gotime.current = (2/771)*height;
+    }
+
     else{
-        totalcomp = 40;
+        totalcomp.current = 40;
         gotime.current = (2/771)*height;
     }
 
     if (intervalStarted.current) return;
       intervalStarted.current = true;
       const cmatinterval = setInterval(() => { 
-        if(compocount.current < totalcomp)
+        if(compocount.current < totalcomp.current)
               addComponent();
-          else{
-            console.log("not adding");
-        }
       }
     , 50);
-  },[status])
+  },[status , width , height])
   
-  
-//   useEffect(() => {
-   
-//   }, []);
 
   const handleDone = (id) => {
     setComponents((prev) => prev.filter((item) => item.id !== id));
