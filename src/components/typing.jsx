@@ -123,7 +123,7 @@ export function TypingAnimation({
   return (
     <MotionComponent
       ref={elementRef}
-      className={` font-pressstarttwop lg:text-[23px] md:text-[15px] sm:text-lg text-[10px] font-bold leading-[5rem] tracking-[-0.02em] ${
+      className={` font-pressstarttwop select-none lg:text-[23px] md:text-[15px] sm:text-lg text-[10px] font-bold leading-[5rem] tracking-[-0.02em] ${
         className || ""
       }`}
       initial={{ color: initialColor }}
@@ -131,7 +131,7 @@ export function TypingAnimation({
       transition={{ duration: 0.4 }}
       {...props}
     >
-      <h1>{displayedText}</h1>
+      <h1 className="select-none">{displayedText}</h1>
     </MotionComponent>
   );
 }

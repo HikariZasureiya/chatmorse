@@ -1,15 +1,25 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect , useMemo } from "react";
 import { TypingAnimation } from "../components/typing";
 import audioon from "../assets/audioon.svg"; // or .svg/.jpg
 import muteaudio from "../assets/muteaudio.svg";
+import CMatrix from "../components/Cmatrix";
 
-function Room() {
+function Home() {
+  const totalHeight = document.documentElement.scrollHeight;
+  const totalWidth = document.documentElement.scrollWidth;
   const [moved, setMoved] = useState(false);
+  const movedRef=useRef(moved);
   const [done, setDone] = useState("#ffffff");
   const doneRef = useRef(done);
   const audioCtxRef = useRef(null);
   const [audioctr, setaudioctr] = useState(0);
   const [audioEnabled, setAudioEnabled] = useState(false);
+
+
+  useEffect(()=>{
+    movedRef.current = moved;
+  },[moved])
+  
 
   const handleStartAudio = () => {
     if (!audioCtxRef.current) {
@@ -38,9 +48,8 @@ function Room() {
     }
   };
 
-
   return (
-    <div className="flex relative flex-col w-screen h-screen items-center justify-center">
+    <div className="flex relative flex-col w-screen h-screen items-center justify-center bg-black ">
       <div
         className={`absolute top-0 left-0 w-screen h-screen z-50 flex flex-col  bg-black transition-all duration-1000 ease-in-out ${
           moved ? "-translate-y-full opacity-100" : "translate-y-0 opacity-100"
@@ -68,17 +77,19 @@ function Room() {
                 audioCtxRef={audioCtxRef}
                 duration={50}
               >
-                { "-- --- .-. ... . / - .- .-.. -.- " }
+                {"-- --- .-. ... . / - .- .-.. -.- "}
               </TypingAnimation>
             </div>
           </div>
         </div>
       </div>
+      
+    <div className="h-full w-full">
+      <CMatrix height={totalHeight} width={totalWidth} status={moved}/>
+    </div>
 
-      <div>
-      </div>
     </div>
   );
 }
 
-export default Room;
+export default Home;
