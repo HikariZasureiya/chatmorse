@@ -14,8 +14,8 @@ function Home() {
   const audioCtxRef = useRef(null);
   const [audioctr, setaudioctr] = useState(0);
   const [audioEnabled, setAudioEnabled] = useState(false);
- const [totHeight, setTotHeight] = useState(document.documentElement.scrollHeight);
-const [totWidth, setTotWidth] = useState(document.documentElement.scrollWidth);
+  const [totHeight, setTotHeight] = useState(document.documentElement.scrollHeight);
+  const [totWidth, setTotWidth] = useState(document.documentElement.scrollWidth);
 
 useEffect(() => {
   const handleResize = () => {
@@ -47,13 +47,11 @@ useEffect(() => {
       setAudioEnabled((prev) => {
         return !prev;
       });
-      console.log("Audio resumed");
     } else if (ctx.state === "running") {
       await ctx.suspend();
       setAudioEnabled((prev) => {
         return !prev;
       });
-      console.log("Audio suspended");
     }
   };
 

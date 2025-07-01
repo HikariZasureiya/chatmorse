@@ -5,15 +5,19 @@ const CmatCompo = ({ id  , handleDone , compocountRef , height , width, gotime }
   const [moved, setMoved] = useState(false);
   const [text, setText] = useState("");
   const [lock, setLock] = useState(true);
-  const [generatetime , setgeneratetime] = useState(100); 
+  const [generatetime , setgeneratetime] = useState(100);
+  const [fontsize , setfontsize] = useState(16); 
   const randx = useMemo(() => {
-   
     return Math.floor(Math.random() * (width - 2 + 1)) + 2;
   }, []);
 
   useEffect(()=>{
+    console.log("yeah")
+
     if(height > 750 && width < 640)
         setgeneratetime(70);
+    if(width < 500)
+            setfontsize(11);
   },[width , height])
 
   useEffect(() => {
@@ -44,8 +48,8 @@ const CmatCompo = ({ id  , handleDone , compocountRef , height , width, gotime }
           return prev.slice(1) + String.fromCharCode(randascii);
         });
         timee += 100;
-        console.log(generatetime)
-        if (timee > gotime.current*1000) {
+
+        if (timee > gotime.current*1000+500) {
           handleDone(id);
           compocountRef.current -= 1;
           clearInterval(interval);
@@ -62,7 +66,8 @@ const CmatCompo = ({ id  , handleDone , compocountRef , height , width, gotime }
       className="absolute w-screen h-screen z-50 flex flex-col select-none"
     >
       {text.split("").map((char, index) => (
-        <div key={index} className="text-green-500">
+
+        <div key={index} style={{ fontSize: `${fontsize}px` }} className={`text-green-500`}>
           {char}
         </div>
       ))}
@@ -78,8 +83,6 @@ const CMatrix = ({height , width , status}) => {
   const compocount = useRef(0);
   const gotime = useRef(0);
  
-
-
    const addComponent = () => {
     const id = crypto.randomUUID();
     setComponents((prev) => [...prev, { id }]);
@@ -107,12 +110,12 @@ const CMatrix = ({height , width , status}) => {
     }
 
     else if(width > 500){
-        totalcomp.current = 70;
-         gotime.current = (2/771)*height;
+        totalcomp.current = 100;
+        gotime.current = (2/771)*height;
     }
 
     else{
-        totalcomp.current = 40;
+        totalcomp.current = 100;
         gotime.current = (2/771)*height;
     }
 
