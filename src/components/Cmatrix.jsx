@@ -12,8 +12,6 @@ const CmatCompo = ({ id  , handleDone , compocountRef , height , width, gotime }
   }, []);
 
   useEffect(()=>{
-    console.log("yeah")
-
     if(height > 750 && width < 640)
         setgeneratetime(70);
     if(width < 500)
