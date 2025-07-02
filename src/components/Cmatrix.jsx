@@ -1,28 +1,34 @@
-import { useState, useRef, useEffect , useMemo } from "react";
-import { motion } from "motion/react"
+import { useState, useRef, useEffect, useMemo } from "react";
+import { motion } from "motion/react";
 
-const CmatCompo = ({ id  , handleDone , compocountRef , height , width, gotime }) => {
+const CmatCompo = ({
+  id,
+  handleDone,
+  compocountRef,
+  height,
+  width,
+  gotime,
+}) => {
   const [moved, setMoved] = useState(false);
   const [text, setText] = useState("");
   const [lock, setLock] = useState(true);
-  const [generatetime , setgeneratetime] = useState(100);
-  const [fontsize , setfontsize] = useState(16); 
+  const [generatetime, setgeneratetime] = useState(100);
+  const [fontsize, setfontsize] = useState(16);
   const randx = useMemo(() => {
     return Math.floor(Math.random() * (width - 2 + 1)) + 2;
   }, []);
 
-  useEffect(()=>{
-    if(height > 750 && width < 640)
-        setgeneratetime(70);
-    if(width < 500)
-            setfontsize(14);
-  },[width , height])
+  useEffect(() => {
+    if (height > 750 && width < 640) setgeneratetime(70);
+    if (width < 500) setfontsize(14);
+  }, [width, height]);
 
   useEffect(() => {
     const chargen = () => {
       const maxlen = 20;
       const minlen = 10;
-      const randlen = Math.floor(Math.random() * (maxlen - minlen + 1)) + minlen;
+      const randlen =
+        Math.floor(Math.random() * (maxlen - minlen + 1)) + minlen;
       let stringg = "";
       for (let i = 0; i < randlen; i++) {
         const randascii = Math.floor(Math.random() * (122 - 33 + 1)) + 33;
@@ -47,7 +53,7 @@ const CmatCompo = ({ id  , handleDone , compocountRef , height , width, gotime }
         });
         timee += 100;
 
-        if (timee > gotime.current*1000+500) {
+        if (timee > gotime.current * 1000 + 500) {
           handleDone(id);
           compocountRef.current -= 1;
           clearInterval(interval);
@@ -59,73 +65,81 @@ const CmatCompo = ({ id  , handleDone , compocountRef , height , width, gotime }
   return (
     <motion.div
       initial={{ left: randx, top: -500 }}
-      animate={{ top: moved ? height*1.5 : -500 }}
+      animate={{ top: moved ? height * 1.5 : -500 }}
       transition={{ duration: gotime.current, ease: "linear" }}
       className="absolute w-screen h-screen z-50 flex flex-col select-none"
     >
-      {text.split("").map((char, index) => (
+      {text
+        .split("")
+        .slice(0, -1)
+        .map((char, index) => (
+          <div
+            key={index}
+            style={{ fontSize: `${fontsize}px` }}
+            className="text-green-500"
+          >
+            {char}
+          </div>
+        ))}
 
-        <div key={index} style={{ fontSize: `${fontsize}px` }} className={`text-green-500`}>
-          {char}
-        </div>
-      ))}
+      <div
+        key={text.length}
+        style={{ fontSize: `${fontsize}px` }}
+        className="text-cyan-50"
+      >
+        {text.charAt(text.length - 1)}
+      </div>
     </motion.div>
   );
 };
 
-const CMatrix = ({height , width , status}) => {
-
+const CMatrix = ({ height, width, status }) => {
   const [components, setComponents] = useState([]);
   const intervalStarted = useRef(false);
   const totalcomp = useRef(0);
   const compocount = useRef(0);
   const gotime = useRef(0);
- 
-   const addComponent = () => {
+  const spawntime = useRef(0);
+
+
+  const addComponent = () => {
     const id = crypto.randomUUID();
     setComponents((prev) => [...prev, { id }]);
     compocount.current += 1;
   };
 
   // Start interval only once
-  useEffect(()=>{
-    
-    if(!(status)) return;
+  useEffect(() => {
+    if (!status) return;
 
-    if(width>1024){
-        totalcomp.current = 500;
-        gotime.current = (3/730)*height;
-    }
-
-    else if(width > 768){
-        totalcomp.current = 200;
-         gotime.current = (3/730)*height;
-        }
-
-    else if(width > 640){
-        totalcomp.current = 100;
-         gotime.current = (3/771)*height;
-    }
-
-    else if(width > 500){
-        totalcomp.current = 100;
-        gotime.current = (3/771)*height;
-    }
-
-    else{
-        totalcomp.current = 100;
-        gotime.current = (3/771)*height;
+    if (width > 1024) {
+      totalcomp.current = 500;
+      gotime.current = (3 / 730) * height;
+      spawntime.current = 10;
+    } else if (width > 768) {
+      totalcomp.current = 200;
+      gotime.current = (3 / 730) * height;
+      spawntime.current = 30;
+    } else if (width > 640) {
+      totalcomp.current = 100;
+      gotime.current = (3 / 771) * height;
+      spawntime.current = 40;
+    } else if (width > 500) {
+      totalcomp.current = 100;
+      gotime.current = (3 / 771) * height;
+      spawntime.current = 40;
+    } else {
+      totalcomp.current = 100;
+      gotime.current = (3 / 771) * height;
+      spawntime.current = 50;
     }
 
     if (intervalStarted.current) return;
-      intervalStarted.current = true;
-      const cmatinterval = setInterval(() => { 
-        if(compocount.current < totalcomp.current)
-              addComponent();
-      }
-    , 50);
-  },[status , width , height])
-  
+    intervalStarted.current = true;
+    const cmatinterval = setInterval(() => {
+      if (compocount.current < totalcomp.current) addComponent();
+    }, spawntime.current);
+  }, [status, width, height]);
 
   const handleDone = (id) => {
     setComponents((prev) => prev.filter((item) => item.id !== id));
@@ -134,7 +148,15 @@ const CMatrix = ({height , width , status}) => {
   return (
     <div className="w-full h-full relative overflow-hidden">
       {components.map((item) => (
-        <CmatCompo key={item.id} id={item.id} handleDone={handleDone} compocountRef={compocount} height={height} width={width} gotime={gotime} />
+        <CmatCompo
+          key={item.id}
+          id={item.id}
+          handleDone={handleDone}
+          compocountRef={compocount}
+          height={height}
+          width={width}
+          gotime={gotime}
+        />
       ))}
     </div>
   );
