@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect , useMemo } from "react";
-import { motion, MotionConfig } from "motion/react"
+import { motion } from "motion/react"
 
 const CmatCompo = ({ id  , handleDone , compocountRef , height , width, gotime }) => {
   const [moved, setMoved] = useState(false);
@@ -15,7 +15,7 @@ const CmatCompo = ({ id  , handleDone , compocountRef , height , width, gotime }
     if(height > 750 && width < 640)
         setgeneratetime(70);
     if(width < 500)
-            setfontsize(11);
+            setfontsize(14);
   },[width , height])
 
   useEffect(() => {
@@ -104,17 +104,17 @@ const CMatrix = ({height , width , status}) => {
 
     else if(width > 640){
         totalcomp.current = 100;
-         gotime.current = (2/771)*height;
+         gotime.current = (3/771)*height;
     }
 
     else if(width > 500){
         totalcomp.current = 100;
-        gotime.current = (2/771)*height;
+        gotime.current = (3/771)*height;
     }
 
     else{
         totalcomp.current = 100;
-        gotime.current = (2/771)*height;
+        gotime.current = (3/771)*height;
     }
 
     if (intervalStarted.current) return;
