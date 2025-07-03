@@ -54,7 +54,6 @@ export function TypingAnimation({
     let i = 0;
     let time = 0;
     let singletime = 0;
-    let index = 0;
     
     const interval = setInterval(() => {
       if (i >= children.length) {

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect , useMemo } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { TypingAnimation } from "../components/typing";
 import audioon from "../assets/audioon.svg"; // or .svg/.jpg
 import muteaudio from "../assets/muteaudio.svg";
@@ -8,27 +8,33 @@ function Home() {
   const totalHeight = document.documentElement.scrollHeight;
   const totalWidth = document.documentElement.scrollWidth;
   const [moved, setMoved] = useState(false);
-  const movedRef=useRef(moved);
+  const movedRef = useRef(moved);
   const [done, setDone] = useState("#ffffff");
   const doneRef = useRef(done);
   const audioCtxRef = useRef(null);
   const [audioctr, setaudioctr] = useState(0);
   const [audioEnabled, setAudioEnabled] = useState(false);
-  const [totHeight, setTotHeight] = useState(document.documentElement.scrollHeight);
-  const [totWidth, setTotWidth] = useState(document.documentElement.scrollWidth);
+  const [totHeight, setTotHeight] = useState(
+    document.documentElement.scrollHeight
+  );
+  const [totWidth, setTotWidth] = useState(
+    document.documentElement.scrollWidth
+  );
+  const [starttyping, setstarttyping] = useState(false);
 
-useEffect(() => {
-  const handleResize = () => {
-    setTotHeight(document.documentElement.scrollHeight);
-    setTotWidth(document.documentElement.scrollWidth);
-  };
-  window.addEventListener('resize', handleResize);
-  handleResize();
+  useEffect(() => {
+    const handleResize = () => {
+      setTotHeight(document.documentElement.scrollHeight);
+      setTotWidth(document.documentElement.scrollWidth);
+    };
+    window.addEventListener("resize", handleResize);
+    handleResize();
 
-  return () => {
-    window.removeEventListener('resize', handleResize);
-  };
-  }, []); 
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+
+  }, []);
 
   const handleStartAudio = () => {
     if (!audioCtxRef.current) {
@@ -56,7 +62,7 @@ useEffect(() => {
   };
 
   return (
-    <div className="flex relative flex-col w-screen h-screen items-center justify-center bg-black ">
+    <div className="flex relative flex-col w-screen min-h-screen items-center justify-center bg-black ">
       <div
         className={`absolute top-0 left-0 w-screen h-screen z-50 flex flex-col  bg-black transition-all duration-1000 ease-in-out ${
           moved ? "-translate-y-full opacity-100" : "translate-y-0 opacity-100"
@@ -90,11 +96,15 @@ useEffect(() => {
           </div>
         </div>
       </div>
-      
-    <div className="h-full w-full">
-      <CMatrix height={totHeight} width={totWidth} status={moved}/>
-    </div>
-
+      {moved && (
+        <CMatrix height={totHeight} width={totWidth} status={moved} zzindex={0}>
+          <div className="relative min-h-screen w-full bg-white/1 backdrop-blur-[3px] backdrop-brightness-75">
+            <div className="w-full h-auto flex justify-center items-center p-2 lg:text-xl md:text-lg sm:text-sm text-[9px] font-pressstarttwop">
+              <h1 className="mt-20">MORSE TALK</h1>
+            </div>
+          </div>
+        </CMatrix>
+      )}
     </div>
   );
 }

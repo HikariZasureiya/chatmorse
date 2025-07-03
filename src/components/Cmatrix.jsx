@@ -8,6 +8,7 @@ const CmatCompo = ({
   height,
   width,
   gotime,
+  zzindex,
 }) => {
   const [moved, setMoved] = useState(false);
   const [text, setText] = useState("");
@@ -53,7 +54,7 @@ const CmatCompo = ({
         });
         timee += 100;
 
-        if (timee > gotime.current * 1000 + 500) {
+        if (timee > gotime.current * 1000 ) {
           handleDone(id);
           compocountRef.current -= 1;
           clearInterval(interval);
@@ -68,6 +69,8 @@ const CmatCompo = ({
       animate={{ top: moved ? height * 1.5 : -500 }}
       transition={{ duration: gotime.current, ease: "linear" }}
       className="absolute w-screen h-screen z-50 flex flex-col select-none"
+      style={{zIndex:zzindex}}
+
     >
       {text
         .split("")
@@ -93,7 +96,7 @@ const CmatCompo = ({
   );
 };
 
-const CMatrix = ({ height, width, status }) => {
+const CMatrix = ({ height, width, status , zzindex , children }) => {
   const [components, setComponents] = useState([]);
   const intervalStarted = useRef(false);
   const totalcomp = useRef(0);
@@ -146,19 +149,30 @@ const CMatrix = ({ height, width, status }) => {
   };
 
   return (
-    <div className="w-full h-full relative overflow-hidden">
-      {components.map((item) => (
-        <CmatCompo
-          key={item.id}
-          id={item.id}
-          handleDone={handleDone}
-          compocountRef={compocount}
-          height={height}
-          width={width}
-          gotime={gotime}
-        />
-      ))}
-    </div>
+    <div className="w-full min-h-screen relative">
+  {/* matrix rain layer (stays in background) */}
+  <div className="w-full absolute inset-0 overflow-hidden z-0">
+    {components.map((item) => (
+      <CmatCompo
+        key={item.id}
+        id={item.id}
+        handleDone={handleDone}
+        compocountRef={compocount}
+        height={height}
+        width={width}
+        gotime={gotime}
+        zzindex={zzindex}
+      />
+    ))}
+  </div>
+
+  {/* foreground content that can overflow */}
+  <div className="relative z-10">
+    {children}
+  </div>
+</div>
+    
+    
   );
 };
 
