@@ -1,8 +1,12 @@
+import { useNavigate } from 'react-router-dom';
 import { useState, useRef, useEffect, useMemo } from "react";
 import { TypingAnimation } from "../components/typing";
+import { Typing } from "../components/typing1"
 import audioon from "../assets/audioon.svg"; // or .svg/.jpg
 import muteaudio from "../assets/muteaudio.svg";
 import CMatrix from "../components/Cmatrix";
+import { motion } from "motion/react";
+import { Button } from "../components/HomeButton"
 
 function Home() {
   const totalHeight = document.documentElement.scrollHeight;
@@ -21,6 +25,8 @@ function Home() {
     document.documentElement.scrollWidth
   );
   const [starttyping, setstarttyping] = useState(false);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -35,6 +41,10 @@ function Home() {
     };
 
   }, []);
+
+  useEffect(()=>{
+    console.log("here", starttyping);
+  },[starttyping])
 
   const handleStartAudio = () => {
     if (!audioCtxRef.current) {
@@ -63,10 +73,14 @@ function Home() {
 
   return (
     <div className="flex relative flex-col w-screen min-h-screen items-center justify-center bg-black ">
-      <div
+      <motion.div
         className={`absolute top-0 left-0 w-screen h-screen z-50 flex flex-col  bg-black transition-all duration-1000 ease-in-out ${
           moved ? "-translate-y-full opacity-100" : "translate-y-0 opacity-100"
         }`}
+
+        onTransitionEnd={() => {
+            setstarttyping(true);
+          }}
       >
         <div className=" p-5 flex w-full lg:h-20 md:h-18 sm:h-15 h-14 items-center justify-center">
           <img
@@ -95,12 +109,19 @@ function Home() {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
+
+
       {moved && (
         <CMatrix height={totHeight} width={totWidth} status={moved} zzindex={0}>
           <div className="relative min-h-screen w-full bg-white/1 backdrop-blur-[3px] backdrop-brightness-75">
             <div className="w-full h-auto flex justify-center items-center p-2 lg:text-xl md:text-lg sm:text-sm text-[9px] font-pressstarttwop">
-              <h1 className="mt-20">MORSE TALK</h1>
+              {starttyping && <Typing duration={50} initcol={"white"} fincol={"green"} className="mt-20">{'-- --- .-. ... . / - .- .-.. -.- '}</Typing>}
+            </div>
+            <div  className="w-full h-full">
+              <div>
+                {/* <Button onClick={() => {console.log("yeahh");navigate('/room')}} /> */}
+              </div>
             </div>
           </div>
         </CMatrix>
