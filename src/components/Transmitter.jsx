@@ -2,7 +2,17 @@ import { useState, useRef, useEffect } from "react";
 import morsetotext from "../assets/morsetotext.json";
 import texttomorse from "../assets/texttomorse.json";
 
-export default function ({ setStrii, SetTextStr }) {
+export default function ({
+  setStrii,
+  SetTextStr,
+  curmode,
+  setCurmode,
+  settl,
+  setlindisp,
+  dur,
+  delbut,
+  setdelbut,
+}) {
   const [ismobile, setIsMobile] = useState(false);
   const [clicked, SetClicked] = useState(0);
   const [unclicked, setUnclicked] = useState(0);
@@ -15,6 +25,26 @@ export default function ({ setStrii, SetTextStr }) {
   const clickedRef = useRef(clicked);
   const unclickedRef = useRef(unclicked);
   const mtempref = useRef(mtemp);
+  const curmodeRef = useRef(curmode);
+
+  useEffect(() => {
+    if (delbut === true) {
+      clearInterval(upevent);
+      clearInterval(downevent);
+      setUpevent(null);
+      setUnclicked(0);
+      setTemp("");
+      setmtemp("");
+      SetString("");
+      SetmString("");
+      setStrii("");
+      SetTextStr("");
+      setUpevent(null);
+      setDownevent(null);
+      setdelbut(false);
+      setlindisp(false);
+    }
+  }, [delbut]);
 
   useEffect(() => {
     const checkIfMobile =
@@ -48,6 +78,10 @@ export default function ({ setStrii, SetTextStr }) {
   }, [mtemp]);
 
   useEffect(() => {
+    curmodeRef.current = curmode;
+  }, [curmode]);
+
+  useEffect(() => {
     SetTextStr((prev) => {
       if (morsetotext.hasOwnProperty(temp)) return mstring + morsetotext[temp];
       else if (texttomorse.hasOwnProperty(temp)) return mstring + temp;
@@ -57,6 +91,9 @@ export default function ({ setStrii, SetTextStr }) {
 
   // typein checks for unclicked value to seperate letters annd words
   const typein = () => {
+    settl(0);
+    setlindisp(false);
+    setCurmode("mouse");
     if (upevent) {
       clearInterval(upevent);
       setUpevent(null);
@@ -93,6 +130,8 @@ export default function ({ setStrii, SetTextStr }) {
 
   // works same as typein but adds the main dits and dahs to the string
   const typeout = () => {
+    setlindisp(true);
+    setCurmode("mouse");
     if (downevent) {
       clearInterval(downevent);
       if (clickedRef.current >= 240) {
@@ -116,10 +155,22 @@ export default function ({ setStrii, SetTextStr }) {
     }
 
     const up = setInterval(() => {
-      setUnclicked((prev) => prev + 10);
-
-      // clears string after 3 seconds of inactivity
-      if (unclickedRef.current >= 3000) {
+      if (curmodeRef.current === "mouse") {
+        settl((prev) => prev + 10);
+        setUnclicked((prev) => prev + 10);
+        // clears string after 5 seconds of inactivity
+        if (unclickedRef.current >= dur) {
+          setlindisp(false);
+          settl(0);
+          clearInterval(up);
+          setUpevent(null);
+          setUnclicked(0);
+          SetString("");
+          setTemp("");
+          SetmString("");
+          setmtemp("");
+        }
+      } else {
         clearInterval(up);
         setUpevent(null);
         setUnclicked(0);
@@ -133,7 +184,7 @@ export default function ({ setStrii, SetTextStr }) {
     setUpevent(up);
   };
   return (
-    <>
+    <div className="mb-3 w-full">
       <div>
         {ismobile ? (
           <button
@@ -151,14 +202,14 @@ export default function ({ setStrii, SetTextStr }) {
               e.target.style.backgroundColor = "#EE4B2B";
             }}
           >
-            MOB
+            Key
           </button>
         ) : (
           <button
             style={{
               backgroundColor: "#EE4B2B",
-              width: "100px",
-              height: "50px",
+              width: "100%",
+              height: "60px",
             }}
             onMouseDown={(e) => {
               typein();
@@ -169,10 +220,10 @@ export default function ({ setStrii, SetTextStr }) {
               e.target.style.backgroundColor = "#EE4B2B";
             }}
           >
-            PC
+            Key
           </button>
         )}
       </div>
-    </>
+    </div>
   );
 }

@@ -116,7 +116,8 @@ export function TypingAnimation({
 
     return () => {
       clearInterval(interval);
-      audioCtxRef.current.close();
+      if(audioCtxRef.current)
+        audioCtxRef.current.close();
     };
   }, [started, children, duration, setMoved, setDone]);
   return (

@@ -2,15 +2,19 @@ import { useState, useRef, useEffect } from "react";
 import Click from "../components/Transmitter";
 import morsetotext from "../assets/morsetotext.json";
 import texttomorse from "../assets/texttomorse.json";
-import { TypingAnimation } from "../components/typing";
-import audioon from "../assets/audioon.svg"; // or .svg/.jpg
-import muteaudio from "../assets/muteaudio.svg";
-
-
+import { motion } from "motion/react";
 function Room() {
   const display = useRef();
+  const dur = 3000;
   const [strii, setStrii] = useState("");
   const [textstr, SetTextStr] = useState("");
+  const [curmode, setCurmode] = useState("");
+  const curmodeRef = useRef(curmode);
+  const [tl, settl] = useState(0);
+  const tlref = useRef(tl);
+  const [lindisp, setlindisp] = useState(false);
+  const lindispref = useRef(lindisp);
+  const [delbut , setdelbut] = useState(false);
 
   // Don't even dare touch this. it just works
   const [clicked, SetClicked] = useState(0);
@@ -32,7 +36,28 @@ function Room() {
   const [lock, setlock] = useState(true);
   const lockRef = useRef(lock);
 
+
+
   
+  useEffect(()=>{
+    if(delbut === true){
+      clearInterval(upeventRef.current);
+      clearInterval(downeventRef.current);
+      setUpevent(null);
+      setUnclicked(0);
+      setTemp("");
+      setmtemp("");
+      SetString("");
+      SetmString("");
+      setStrii("");
+      SetTextStr("");
+      setUpevent(null);
+      setDownevent(null);
+      setdelbut(false);
+      setlindisp(false);
+    }
+  },[delbut])
+
   useEffect(() => {
     clickedRef.current = clicked;
   }, [clicked]);
@@ -71,6 +96,18 @@ function Room() {
   }, [mstring]);
 
   useEffect(() => {
+    curmodeRef.current = curmode;
+  }, [curmode]);
+
+  useEffect(() => {
+    tlref.current = tl;
+  }, [tl]);
+
+  useEffect(() => {
+    lindispref.current = lindisp;
+  }, [lindisp]);
+
+  useEffect(() => {
     SetTextStr(() => {
       if (morsetotext.hasOwnProperty(temp)) return mstring + morsetotext[temp];
       else if (texttomorse.hasOwnProperty(temp)) return mstring + temp;
@@ -80,6 +117,9 @@ function Room() {
 
   useEffect(() => {
     const handleKeyPress = (event) => {
+      settl(0);
+      setlindisp(false);
+      setCurmode("keyboard");
       if (lockRef.current) {
         setlock(false);
         if (upeventRef.current) {
@@ -117,6 +157,7 @@ function Room() {
       }
     };
     const handleKeyUp = (event) => {
+      setlindisp(true);
       setlock(true);
       if (downeventRef.current) {
         clearInterval(downeventRef.current);
@@ -143,19 +184,33 @@ function Room() {
         }
         SetClicked(0);
       }
-      const up = setInterval(() => {
-        setUnclicked((prev) => prev + 10);
 
-        // clears string after 3 seconds of inactivity
-        if (unclickedRef.current >= 3000) {
+      const up = setInterval(() => {
+        if (curmodeRef.current === "keyboard") {
+          setUnclicked((prev) => prev + 10);
+          settl((prev) => {
+            return tlref.current + 10;
+          });
+
+          if (unclickedRef.current >= dur) {
+            setlindisp(false);
+            settl(0);
+            clearInterval(up);
+            setUpevent(null);
+            setUnclicked(0);
+            setTemp("");
+            setmtemp("");
+            SetString("");
+            SetmString("");
+          }
+        } else {
           clearInterval(up);
           setUpevent(null);
           setUnclicked(0);
-          SetClicked(0);
-          SetString("");
           setTemp("");
-          SetmString("");
           setmtemp("");
+          SetString("");
+          SetmString("");
         }
       }, 10);
       setUpevent(up);
@@ -172,13 +227,55 @@ function Room() {
   }, []);
 
   return (
-    <div className="flex relative flex-col w-screen h-screen items-center justify-center">
-      <div>
-        <Click setStrii={setStrii} SetTextStr={SetTextStr} />
-        <div ref={display} style={{ marginBottom: "20px", marginTop: "10px" }}>
-          Morse: {strii}
+    <div className="w-screen h-screen items-center justify-center bg-black">
+      <div className="w-full h-full flex flex-col">
+        <div className="w-full min-h-[5%]"></div>
+        <div className="w-full flex items-center justify-center mb-auto sm:h-[93%] lg:h-full">
+          <div className="w-[25%] h-[100%] mr-auto"></div>
+          <div className="w-[50%] h-[100%] mr-auto flex flex-col">
+            <div className="min-h-[2px] w-[99%]">
+              {lindisp && (
+                <motion.div
+                  initial={{ opacity: "0%" }}
+                  animate={{ opacity: "100%" }}
+                  transition={{ duration: "1.5" }}
+                  className="h-full w-full flex"
+                >
+                  <div
+                    className="h-full bg-red-500"
+                    style={{ width: `${(tl / dur) * 100}%` }}
+                  ></div>
+                </motion.div>
+              )}
+            </div>
+            <div className="text-white  break-words text-sm w-full overflow-y-auto min-h-[10%] p-2  rounded-sm max-h-[20%]">
+              {textstr}
+            </div>
+
+            <div className="w-full h-full rounded-sm mb-2"></div>
+
+            <div className="text-white overflow-y-auto break-words text-sm w-full min-h-[10%] p-2 mb-2 rounded-sm max-h-[20%]">
+              {strii}
+            </div>
+            <div className="w-full flex items-center justify-center">
+              <Click
+                setStrii={setStrii}
+                SetTextStr={SetTextStr}
+                curmode={curmode}
+                setCurmode={setCurmode}
+                setlindisp={setlindisp}
+                settl={settl}
+                delbut={delbut}
+                setdelbut={setdelbut}
+                dur={dur}
+              />
+              <div className="text-white p-2">wafw</div>
+              <div className="text-white p-2" onClick={()=>{setdelbut(true)}}>fwf</div>
+            </div>
+          </div>
+
+          <div className="border w-[25%] h-[100%] mr-auto"></div>
         </div>
-        <div>Text: {textstr}</div>
       </div>
     </div>
   );
