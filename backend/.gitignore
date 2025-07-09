@@ -1,0 +1,4 @@
+.env
+appback
+/__pycache__
+/morsechatserver/__pycache__

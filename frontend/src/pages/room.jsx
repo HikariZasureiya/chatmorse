@@ -22,7 +22,7 @@ const Switcher = ({ setmatrixon, matrixon }) => {
           onChange={handleCheckboxChange}
           className="sr-only"
         />
-        <div className="block h-6 w-12 rounded-full bg-green-400"></div>
+        <div className={`block h-6 w-12 rounded-full ${matrixon ? "bg-green-400" : "bg-gray-500"}`}></div>
         <div
           className={`dot absolute top-1 left-1 h-4 w-4 rounded-full bg-white transition 
             ${matrixon ? "translate-x-6" : "translate-x-0"}`}
@@ -117,7 +117,8 @@ function Room() {
 
   useEffect(() => {
     if (sndbut === true) {
-      addtochat(strii, textstr);
+      if(textstr.trim()!== '')
+        addtochat(strii, textstr);
       clearInterval(upeventRef.current);
       clearInterval(downeventRef.current);
       setUpevent(null);
@@ -286,7 +287,8 @@ function Room() {
           });
 
           if (unclickedRef.current >= dur) {
-            addtochat(stringRef.current, mstringRef.current + tempRef.current);
+            if((mstringRef.current + tempRef.current).trim() !== '')
+              addtochat(stringRef.current, mstringRef.current + tempRef.current);
             setlindisp(false);
             settl(0);
             clearInterval(up);
