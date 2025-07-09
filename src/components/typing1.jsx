@@ -11,6 +11,10 @@ export  function Typing({
   startOnView = false,
   initcol,
   fincol,
+  ftsizelg = "lg:text-[23px]",
+  ftsizemd = "md:text-[15px]",
+  ftsizesm = "sm:text-lg",
+  ftsize = "text-[10px]",
   ...props
 }) {
   const MotionComponent = motion(Component);
@@ -71,25 +75,22 @@ export  function Typing({
 
       const char = children.charAt(i);
       let waitfor = 0;
-      
-    //   if (char === ".") {
-    //     waitfor = duration + 1;
-    //   }
-    //   else if (char === "-"){
-    //     waitfor = duration * 3;
-    //     }
 
-    //   else if (char === " "){
-    //     waitfor = duration * 4;
-    //   }
 
-      
       if (singletime >= waitfor) {
         intermediatemorse.current += char; 
         
+        console.log(intermediatemorse.current);
+
         if(char === " "){
-          intermediate.current += morsetotext[intermediatemorse.current.trim()];
-          intermediatemorse.current = ''; 
+          if(morsetotext.hasOwnProperty(intermediatemorse.current.trim())){
+            intermediate.current += morsetotext[intermediatemorse.current.trim()];
+            intermediatemorse.current = '';
+          }
+          else{
+            console.log("what", intermediate.current);
+            intermediatemorse.current = '';
+          } 
         }
 
         setDisplayedText((prev) => {
@@ -110,12 +111,14 @@ export  function Typing({
   return (
     <MotionComponent
       ref={elementRef}
-      className={` font-pressstarttwop select-none lg:text-[23px] md:text-[15px] sm:text-lg text-[10px] font-bold leading-[5rem] tracking-[-0.02em] ${
+      className={`font-pressstarttwop select-none ${ftsizelg} ${ftsizemd} ${ftsizesm} ${ftsize} font-bold leading-[5rem] tracking-[-0.02em] ${
         className || ""
       }`}
-      initial={{ color: initialColor }}
+
+       initial={{ color: initialColor }}
       animate={{ color: finalColor }}
       transition={{ duration: 0.4 }}
+    
       {...props}
     >
       <h1 className="select-none">{displayedText}</h1>

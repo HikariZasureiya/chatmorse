@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import morsetotext from "../assets/morsetotext.json";
 import texttomorse from "../assets/texttomorse.json";
 
+
 export default function ({
   setStrii,
   SetTextStr,
@@ -12,6 +13,10 @@ export default function ({
   dur,
   delbut,
   setdelbut,
+  sndbut,
+  addtochat,
+  strii,
+  textstr,
 }) {
   const [ismobile, setIsMobile] = useState(false);
   const [clicked, SetClicked] = useState(0);
@@ -28,7 +33,7 @@ export default function ({
   const curmodeRef = useRef(curmode);
 
   useEffect(() => {
-    if (delbut === true) {
+    if (delbut === true || sndbut === true) {
       clearInterval(upevent);
       clearInterval(downevent);
       setUpevent(null);
@@ -44,7 +49,7 @@ export default function ({
       setdelbut(false);
       setlindisp(false);
     }
-  }, [delbut]);
+  }, [delbut, sndbut]);
 
   useEffect(() => {
     const checkIfMobile =
@@ -64,11 +69,6 @@ export default function ({
     unclickedRef.current = unclicked;
   }, [unclicked]);
 
-  //   useEffect(() => {
-  //     tempref.current = temp;
-  //   }, [temp]);
-
-  // update Strii as needed
   useEffect(() => {
     setStrii(string);
   }, [string]);
@@ -99,7 +99,7 @@ export default function ({
       setUpevent(null);
     }
     if (unclickedRef.current >= 560) {
-      SetString((prev) => prev + "/");
+      SetString((prev) => prev + " / ");
       SetmString((prev) => {
         if (texttomorse.hasOwnProperty(temp)) return prev + temp + " ";
         else if (morsetotext.hasOwnProperty(temp))
@@ -158,8 +158,9 @@ export default function ({
       if (curmodeRef.current === "mouse") {
         settl((prev) => prev + 10);
         setUnclicked((prev) => prev + 10);
-        // clears string after 5 seconds of inactivity
+
         if (unclickedRef.current >= dur) {
+          addtochat(strii.current, textstr.current);
           setlindisp(false);
           settl(0);
           clearInterval(up);
@@ -184,40 +185,41 @@ export default function ({
     setUpevent(up);
   };
   return (
-    <div className="mb-3 w-full">
-      <div>
+    <div className=" w-full">
+      <div className="flex w-full items-center justify-center">
         {ismobile ? (
           <button
             style={{
-              backgroundColor: "#EE4B2B",
+              backgroundColor: "#22c55e",
               width: "100px",
               height: "50px",
             }}
             onTouchStart={(e) => {
               typein();
-              e.target.style.backgroundColor = "#E97451";
+              e.target.style.backgroundColor = "#15803D";
             }}
             onTouchEnd={(e) => {
               typeout();
-              e.target.style.backgroundColor = "#EE4B2B";
+              e.target.style.backgroundColor = "#22c55e";
             }}
           >
             Key
           </button>
         ) : (
           <button
+            className=""
             style={{
-              backgroundColor: "#EE4B2B",
+              backgroundColor: "#22c55e",
               width: "100%",
-              height: "60px",
+              height: "40px",
             }}
             onMouseDown={(e) => {
               typein();
-              e.target.style.backgroundColor = "#E97451";
+              e.target.style.backgroundColor = "#15803D";
             }}
             onMouseUp={(e) => {
               typeout();
-              e.target.style.backgroundColor = "#EE4B2B";
+              e.target.style.backgroundColor = "#22c55e";
             }}
           >
             Key

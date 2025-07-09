@@ -149,9 +149,19 @@ const CMatrix = ({ height, width, status , zzindex , children }) => {
   };
 
   return (
-    <div className="w-full min-h-screen relative">
+    <div className="relative"
+      style={{
+        "width": `${width}px` ,
+        "height":`${height-1}px`
+      }}
+    >
   {/* matrix rain layer (stays in background) */}
-  <div className="w-full absolute inset-0 overflow-hidden z-0">
+  { status && <div className="absolute inset-0 overflow-hidden z-0"
+    style={{
+        "width": `${width}px` ,
+        "height":`${height-1}px`
+      }}
+  >
     {components.map((item) => (
       <CmatCompo
         key={item.id}
@@ -164,7 +174,7 @@ const CMatrix = ({ height, width, status , zzindex , children }) => {
         zzindex={zzindex}
       />
     ))}
-  </div>
+  </div>}
 
   {/* foreground content that can overflow */}
   <div className="relative z-10">
