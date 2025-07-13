@@ -17,6 +17,11 @@ export default function ({
   addtochat,
   strii,
   textstr,
+  usernamestate,
+  sendmessage,
+  socketpoint,
+  settypingindicator,
+  wpm,
 }) {
   const [ismobile, setIsMobile] = useState(false);
   const [clicked, SetClicked] = useState(0);
@@ -91,6 +96,9 @@ export default function ({
 
   // typein checks for unclicked value to seperate letters annd words
   const typein = () => {
+    settypingindicator((prev)=>{
+        return true;
+      })
     settl(0);
     setlindisp(false);
     setCurmode("mouse");
@@ -98,7 +106,7 @@ export default function ({
       clearInterval(upevent);
       setUpevent(null);
     }
-    if (unclickedRef.current >= 560) {
+    if (unclickedRef.current >= (1200/wpm)*7) {
       SetString((prev) => prev + " / ");
       SetmString((prev) => {
         if (texttomorse.hasOwnProperty(temp)) return prev + temp + " ";
@@ -108,7 +116,7 @@ export default function ({
       });
       setTemp("");
       setmtemp("");
-    } else if (unclickedRef.current >= 240) {
+    } else if (unclickedRef.current >= (1200 / wpm)*3) {
       SetString((prev) => prev + " ");
       SetmString((prev) => {
         if (texttomorse.hasOwnProperty(temp)) return prev + temp;
@@ -134,7 +142,7 @@ export default function ({
     setCurmode("mouse");
     if (downevent) {
       clearInterval(downevent);
-      if (clickedRef.current >= 240) {
+      if (clickedRef.current >= (1200/wpm)*3) {
         SetString((prev) => prev + "-");
         setTemp((prev) => {
           if (morsetotext.hasOwnProperty(texttomorse[prev] + "-")) {
@@ -160,7 +168,13 @@ export default function ({
         setUnclicked((prev) => prev + 10);
 
         if (unclickedRef.current >= dur) {
-          addtochat(strii.current, textstr.current);
+          if(textstr.current.trim() !== ""){
+              settypingindicator((prev)=>{
+                  return false;
+              })
+              addtochat(strii.current, textstr.current , usernamestate);
+              sendmessage(strii.current , textstr.current ,socketpoint , usernamestate );  
+          }
           setlindisp(false);
           settl(0);
           clearInterval(up);

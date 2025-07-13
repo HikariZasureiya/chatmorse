@@ -149,19 +149,9 @@ const CMatrix = ({ height, width, status , zzindex , children }) => {
   };
 
   return (
-    <div className="relative"
-      style={{
-        "width": `${width}px` ,
-        "height":`${height-1}px`
-      }}
-    >
+    <div className="w-full min-h-screen relative">
   {/* matrix rain layer (stays in background) */}
-  { status && <div className="absolute inset-0 overflow-hidden z-0"
-    style={{
-        "width": `${width}px` ,
-        "height":`${height-1}px`
-      }}
-  >
+  { status && <div className="absolute inset-0 overflow-hidden z-0">
     {components.map((item) => (
       <CmatCompo
         key={item.id}

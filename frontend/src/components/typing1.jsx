@@ -80,15 +80,12 @@ export  function Typing({
       if (singletime >= waitfor) {
         intermediatemorse.current += char; 
         
-        console.log(intermediatemorse.current);
-
         if(char === " "){
           if(morsetotext.hasOwnProperty(intermediatemorse.current.trim())){
             intermediate.current += morsetotext[intermediatemorse.current.trim()];
             intermediatemorse.current = '';
           }
           else{
-            console.log("what", intermediate.current);
             intermediatemorse.current = '';
           } 
         }

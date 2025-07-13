@@ -1,4 +1,22 @@
 .env
 appback
-/__pycache__
-/morsechatserver/__pycache__
+# Ignore Python cache
+__pycache__/
+*/__pycache__/
+**/__pycache__/
+
+# Ignore compiled Python files
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore IDE/editor files
+.vscode/
+.idea/
+
+# Ignore system files
+.DS_Store
+
+# Ignore your build/output directories (customize as needed)
+appback/
+morsechatserver/__pycache__/
