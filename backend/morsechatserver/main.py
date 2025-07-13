@@ -21,10 +21,9 @@ import random
 import string
 
 app = FastAPI()
-origins=["https://morsetalk.vercel.app/" , "https://www.cron-job.org"]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["https://morsetalk.vercel.app", "https://www.cron-job.org"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
