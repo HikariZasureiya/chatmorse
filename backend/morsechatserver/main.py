@@ -23,7 +23,8 @@ import string
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://morsetalk.vercel.app", "https://www.cron-job.org"],
+    allow_origins=["https://morsetalk.vercel.app", "https://www.cron-job.org" , "http://localhost:8000"],
+    # allow_origins=['*'],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -72,15 +73,15 @@ async def delusrname(request: Request):
     except Exception as e:
         raise HTTPException(status_code=400, detail="Invalid request")
 
-@app.get("/getalluser")
-async def getall():
-    all_users = await User.find_all().to_list()
-    return all_users
+# @app.get("/getalluser")
+# async def getall():
+#     all_users = await User.find_all().to_list()
+#     return all_users
 
-@app.get("/getallrooms")
-async def getall():
-    public_rooms = await publicmanager.get_rooms()
-    print("public_rooms: " , public_rooms)
+# @app.get("/getallrooms")
+# async def getall():
+#     public_rooms = await publicmanager.get_rooms()
+#     print("public_rooms: " , public_rooms)
 
 @app.get("/getrooms")
 async def getall():
@@ -93,6 +94,14 @@ async def getall():
             "number": len(public_rooms[room_id]) 
         })
     return ret
+
+@app.get("/roomhas/{room_id}")
+async def room_has(request: Request , room_id: str):
+    public_rooms = await publicmanager.get_rooms()
+    if room_id not in public_rooms:
+        raise HTTPException(status_code=404, detail="room not found")
+    return {"message": "room found"}
+    
 
 
 @app.websocket("/ws/morsechatserver/{room_id}")

@@ -373,7 +373,7 @@ function Room() {
   useEffect(() => {
     const el = divRef.current;
     if (!el) return;
-    const isNearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 100;
+    const isNearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 500;
     if (isNearBottom) {
       el.scrollTop = el.scrollHeight;
     }

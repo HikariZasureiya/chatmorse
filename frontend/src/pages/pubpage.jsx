@@ -12,7 +12,7 @@ export default function Pubpage() {
   const [roomid, setroomid] = useState("");
   const [roomarr, setroomarr] = useState([]);
   const navigate = useNavigate();
-
+  const [color , setcolor] = useState("border-green-400")
   const host = import.meta.env.VITE_HOST;
 
   const addtochat = (data) => {
@@ -23,6 +23,20 @@ export default function Pubpage() {
     const data = { code: roomid };
     navigate("/room", { state: data });
   };
+
+  const roomhas = async (roomid , setcolor) => {
+      try {
+        const response = await fetch(`${host}/roomhas/${roomid}`);
+        if (!response.ok) {
+          setcolor("border-red-600")
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        joinRoom(roomid)
+      } catch (err) {
+        console.error("room doesn't exist:", err);
+      }
+    };
+  
 
   useEffect(() => {
     const getrooms = async () => {
@@ -64,7 +78,7 @@ export default function Pubpage() {
                   <InputOTPSlot
                     key={index}
                     index={index}
-                    className="font-pressstarttwop text-green-400 border border-green-400 lg:h-12 md:h-10 sm:h-7 h-7 lg:w-12 md:w-10 sm:w-7 w-7 lg:text-[20px] md:text-[18px] sm:text-[12px] text-[12px]"
+                    className={`font-pressstarttwop text-green-400 border ${color} lg:h-12 md:h-10 sm:h-7 h-7 lg:w-12 md:w-10 sm:w-7 w-7 lg:text-[20px] md:text-[18px] sm:text-[12px] text-[12px]`}
                   />
                 ))}
               </InputOTPGroup>
@@ -74,8 +88,8 @@ export default function Pubpage() {
               onClick={() => {
                 if (roomid.length < 6) setroomid("");
                 else {
-                  const data = { code: roomid };
-                  navigate("/room", { state: data });
+                  roomhas(roomid  ,setcolor);
+                  setroomid("");
                 }
               }}
               className="cursor-pointer hover:scale-110 active:scale-90"
