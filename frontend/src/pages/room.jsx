@@ -201,7 +201,7 @@ function Room() {
 
       makesocket();
     } else {
-      navigate("/");
+      navigate("/findrooms");
     }
 
     const handleBeforeUnload = (e) => {

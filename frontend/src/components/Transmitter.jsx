@@ -205,7 +205,7 @@ export default function ({
           <button
             style={{
               backgroundColor: "#22c55e",
-              width: "100px",
+              width: "100%",
               height: "50px",
             }}
             onTouchStart={(e) => {
