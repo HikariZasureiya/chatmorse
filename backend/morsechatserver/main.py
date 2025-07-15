@@ -89,10 +89,13 @@ async def getall():
     arr = sorted(public_rooms.keys(), key=lambda x: len(public_rooms[x]), reverse=True)
     ret = []
     for room_id in arr[:20]:
-        ret.append({
-            "roomid": room_id,
-            "number": len(public_rooms[room_id]) 
-        })
+        if len(public_rooms[room_id]) > 0:
+            ret.append({
+                "roomid": room_id,
+                "number": len(public_rooms[room_id]) 
+            })
+        else:
+            del public_rooms[room_id]
     return ret
 
 @app.get("/roomhas/{room_id}")

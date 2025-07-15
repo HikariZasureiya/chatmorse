@@ -60,7 +60,7 @@ export default function Pubpage() {
   return (
     <div className="w-screen h-screen bg-black">
       <div className="flex flex-col h-full w-full">
-        <div className="bg-gray-950 w-full h-[6%]"></div>
+        <div className="w-full h-[6%]"></div>
         <div className="mb-auto mt-10 flex flex-col items-center justify-center">
           <div className="w-full text-white text-center lg:text-[23px] md:text-[20px] sm:text-[15px] text-[15px] mb-5 font-pressstarttwop select-none">
             Join with a code
